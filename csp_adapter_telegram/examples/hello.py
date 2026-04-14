@@ -1,27 +1,24 @@
 import csp
 from csp import ts
 
-from csp_adapter_telegram import TelegramAdapterConfig, TelegramAdapterManager, TelegramMessage
+from csp_adapter_telegram import TelegramAdapter, TelegramConfig, TelegramMessage
 
-config = TelegramAdapterConfig(
-    bot_token=".bot_token",
-)
+config = TelegramConfig(bot_token="123456:ABCDefGhIjKlMnOpQrStUvWxYz")
 
 
 @csp.node
 def reply_hello(msg: ts[TelegramMessage]) -> ts[TelegramMessage]:
     """Reply to every message that starts with hello."""
-    if msg.msg.lower().startswith("hello"):
+    if msg.content.lower().startswith("hello"):
         return TelegramMessage(
             chat_id=msg.chat_id,
-            thread=msg.thread,
-            msg=f"Hello {msg.user}!",
+            content=f"Hello {msg.author.name}!",
         )
 
 
 def graph():
     # Create a Telegram Adapter object
-    adapter = TelegramAdapterManager(config)
+    adapter = TelegramAdapter(config)
 
     # Subscribe and unroll the messages
     msgs = csp.unroll(adapter.subscribe())
