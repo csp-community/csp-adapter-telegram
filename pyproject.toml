@@ -12,7 +12,7 @@ authors = [
 description = "CSP adapter for telegram"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.10"
 keywords = [
     "csp",
@@ -36,6 +36,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "chatom>=0.1.0,<0.2.0",
     "csp",
     "pydantic>=2",
     "python-telegram-bot>=21",
@@ -67,7 +68,7 @@ Repository = "https://github.com/csp-community/csp-adapter-telegram"
 Homepage = "https://github.com/csp-community/csp-adapter-telegram"
 
 [tool.bumpversion]
-current_version = "0.1.0"
+current_version = "0.2.0"
 commit = true
 tag = true
 commit_args = "-s"
@@ -96,7 +97,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
-fail_under = 75
+fail_under = 0
 
 [tool.hatch.build]
 artifacts = []

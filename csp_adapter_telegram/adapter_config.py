@@ -1,3 +1,10 @@
+"""Legacy adapter config - now use TelegramConfig from chatom.telegram.
+
+This module is deprecated. Use TelegramConfig from chatom.telegram instead.
+The TelegramAdapterConfig class is kept for backwards compatibility but
+maps to chatom's TelegramConfig fields as closely as possible.
+"""
+
 from pathlib import Path
 from typing import Optional
 
@@ -7,7 +14,14 @@ __all__ = ("TelegramAdapterConfig",)
 
 
 class TelegramAdapterConfig(BaseModel):
-    """A config class that holds the required information to interact with Telegram."""
+    """Legacy config class for Telegram adapter.
+
+    Deprecated: Use TelegramConfig from chatom.telegram instead.
+
+    This class is maintained for backwards compatibility. New code should use:
+        from chatom.telegram import TelegramConfig
+        config = TelegramConfig(bot_token="...")
+    """
 
     bot_token: str = Field(description="The bot token from @BotFather")
     error_chat_id: Optional[str] = Field(None, description="Chat ID to redirect error messages to, if a message fails to send")
@@ -24,3 +38,13 @@ class TelegramAdapterConfig(BaseModel):
             if parts[0].isdigit() and len(parts[1]) >= 10:
                 return v
         raise ValueError("Bot token must be a valid Telegram bot token (numeric_id:alphanumeric_string) or a file path")
+
+    def to_telegram_config(self):
+        """Convert to chatom TelegramConfig.
+
+        Returns:
+            TelegramConfig: The equivalent chatom config.
+        """
+        from chatom.telegram import TelegramConfig
+
+        return TelegramConfig(bot_token=self.bot_token)
