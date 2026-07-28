@@ -6,7 +6,6 @@ This module provides a CSP adapter for Telegram that wraps the chatom TelegramBa
 import asyncio
 import logging
 import threading
-from typing import Optional, Set
 
 import csp
 from chatom.csp import BackendAdapter
@@ -54,8 +53,8 @@ class TelegramAdapter(BackendAdapter):
     # NOTE: Cannot use @csp.graph decorator, https://github.com/Point72/csp/issues/183
     def subscribe(
         self,
-        channels: Optional[Set[str]] = None,
-        chats: Optional[Set[str]] = None,
+        channels: set[str] | None = None,
+        chats: set[str] | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> ts[[TelegramMessage]]:
@@ -123,7 +122,7 @@ class TelegramAdapter(BackendAdapter):
                             ),
                             timeout=timeout,
                         )
-                    except asyncio.TimeoutError:
+                    except TimeoutError:
                         log.error("Timeout adding reaction")
                     except Exception:
                         log.exception("Failed adding reaction")
@@ -131,7 +130,7 @@ class TelegramAdapter(BackendAdapter):
                         try:
                             await thread_backend.disconnect()
                         except Exception:
-                            pass
+                            log.exception("Failed disconnecting reaction backend")
 
                 try:
                     asyncio.run(add_reaction_async())

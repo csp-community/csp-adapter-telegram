@@ -6,7 +6,6 @@ maps to chatom's TelegramConfig fields as closely as possible.
 """
 
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -24,7 +23,7 @@ class TelegramAdapterConfig(BaseModel):
     """
 
     bot_token: str = Field(description="The bot token from @BotFather")
-    error_chat_id: Optional[str] = Field(None, description="Chat ID to redirect error messages to, if a message fails to send")
+    error_chat_id: str | None = Field(None, description="Chat ID to redirect error messages to, if a message fails to send")
     inform_client: bool = Field(False, description="Whether to inform the intended chat that a message failed to send")
 
     @field_validator("bot_token")

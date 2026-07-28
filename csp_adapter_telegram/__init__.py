@@ -23,23 +23,17 @@ from .adapter import TelegramAdapter, TelegramAdapterManager
 from .adapter_config import TelegramAdapterConfig
 
 __all__ = (
-    # Adapter
+    "MockTelegramBackend",
     "TelegramAdapter",
+    "TelegramAdapterConfig",
     "TelegramAdapterManager",  # Legacy alias
-    # Backend and config (from chatom)
     "TelegramBackend",
-    "TelegramConfig",
-    # Models (from chatom)
-    "TelegramMessage",
-    "TelegramUser",
     "TelegramChannel",
     "TelegramChatType",
+    "TelegramConfig",
+    "TelegramMessage",
     "TelegramPresence",
-    # Utilities (from chatom)
-    "mention_user",
+    "TelegramUser",
     "mention_channel",
-    # Testing
-    "MockTelegramBackend",
-    # Legacy
-    "TelegramAdapterConfig",
+    "mention_user",
 )
