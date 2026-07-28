@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Telegram CSP End-to-End Integration Test.
 
 This script tests all Telegram functionality through the CSP adapter.
@@ -26,7 +25,6 @@ import os
 import sys
 import traceback
 from datetime import datetime, timedelta
-from typing import List, Optional
 
 import csp
 from chatom.base import Message
@@ -44,7 +42,7 @@ from csp import ts
 from csp_adapter_telegram import TelegramAdapter
 
 
-def get_env(name: str, required: bool = True) -> Optional[str]:
+def get_env(name: str, required: bool = True) -> str | None:
     """Get environment variable with validation."""
     value = os.environ.get(name)
     if required and not value:
@@ -57,19 +55,19 @@ class TestState:
     """Container for test state."""
 
     def __init__(self):
-        self.results: List[tuple] = []
-        self.config: Optional[TelegramConfig] = None
-        self.chat_id: Optional[str] = None
-        self.user_id: Optional[str] = None
-        self.username: Optional[str] = None
-        self.user: Optional[TelegramUser] = None
-        self.bot_id: Optional[str] = None
-        self.bot_username: Optional[str] = None
-        self.bot_display_name: Optional[str] = None
-        self.received_message: Optional[Message] = None
+        self.results: list[tuple] = []
+        self.config: TelegramConfig | None = None
+        self.chat_id: str | None = None
+        self.user_id: str | None = None
+        self.username: str | None = None
+        self.user: TelegramUser | None = None
+        self.bot_id: str | None = None
+        self.bot_username: str | None = None
+        self.bot_display_name: str | None = None
+        self.received_message: Message | None = None
         self.waiting_for_inbound: bool = False
         self.test_complete: bool = False
-        self.sent_message_id: Optional[int] = None
+        self.sent_message_id: int | None = None
 
     def log(self, message: str, success: bool = True):
         icon = "PASS" if success else "FAIL"
@@ -127,7 +125,7 @@ async def setup_and_run_pre_csp_tests():
         else:
             STATE.log("Could not get bot info", success=False)
             return False
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Connection / bot info failed: {e}", success=False)
         return False
 
@@ -141,13 +139,13 @@ async def setup_and_run_pre_csp_tests():
             print(f"  Type: {channel.chat_type}")
         else:
             STATE.log(f"Channel {STATE.chat_id} not found", success=False)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Fetch channel info failed: {e}", success=False)
 
     # Test: Send Plain Message (async)
     STATE.section("Test: Send Plain Message (async)")
     try:
-        timestamp = datetime.now().strftime("%H:%M:%S")
+        timestamp = datetime.now().astimezone().strftime("%H:%M:%S")
         result = await backend.send_message(STATE.chat_id, f"[E2E] Plain message sent at {timestamp}")
         if result:
             STATE.sent_message_id = result.message_id
@@ -155,7 +153,7 @@ async def setup_and_run_pre_csp_tests():
             print(f"  Message ID: {result.message_id}")
         else:
             STATE.log("Send message returned None", success=False)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Send plain message failed: {e}", success=False)
 
     # Test: Send Formatted Message
@@ -174,7 +172,7 @@ async def setup_and_run_pre_csp_tests():
         )
         await backend.send_message(STATE.chat_id, msg.render(Format.MARKDOWN))
         STATE.log("Sent formatted message with bold, italic, code")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Send formatted message failed: {e}", success=False)
 
     # Test: Mentions
@@ -192,7 +190,7 @@ async def setup_and_run_pre_csp_tests():
         text = "\n".join(parts)
         await backend.send_message(STATE.chat_id, text)
         STATE.log("Sent message with mentions")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Mentions test failed: {e}", success=False)
 
     # Test: Reactions
@@ -202,7 +200,7 @@ async def setup_and_run_pre_csp_tests():
             await backend.add_reaction(str(STATE.sent_message_id), "👍", channel=STATE.chat_id)
             STATE.log("Added reaction to message")
             await asyncio.sleep(0.5)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             STATE.log(f"Reactions test failed: {e}", success=False)
     else:
         print("  Skipping (no sent message to react to)")
@@ -225,7 +223,7 @@ async def setup_and_run_pre_csp_tests():
         msg.content.append(table)
         await backend.send_message(STATE.chat_id, msg.render(Format.MARKDOWN))
         STATE.log("Sent rich content with table")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         STATE.log(f"Rich content test failed: {e}", success=False)
 
     # Test: Edit Message
@@ -238,7 +236,7 @@ async def setup_and_run_pre_csp_tests():
                 channel=STATE.chat_id,
             )
             STATE.log("Edited existing message")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             STATE.log(f"Edit message failed: {e}", success=False)
     else:
         print("  Skipping (no sent message to edit)")
@@ -253,7 +251,7 @@ async def setup_and_run_pre_csp_tests():
                 reply_to=str(STATE.sent_message_id),
             )
             STATE.log("Sent reply message")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             STATE.log(f"Reply message failed: {e}", success=False)
     else:
         print("  Skipping (no message to reply to)")
@@ -292,7 +290,7 @@ def telegram_csp_e2e_graph():
             if step == 0:
                 # Plain message
                 STATE.section("Test: Send Plain Message (via CSP)")
-                timestamp = datetime.now().strftime("%H:%M:%S")
+                timestamp = datetime.now().astimezone().strftime("%H:%M:%S")
                 STATE.log(f"Sending plain message at {timestamp}")
                 csp.schedule_alarm(a_step, timedelta(seconds=2), 1)
                 return TelegramMessage(
@@ -481,7 +479,7 @@ async def main_async():
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"\n\nCSP graph error: {e}")
         traceback.print_exc()
 
