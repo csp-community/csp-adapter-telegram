@@ -1,4 +1,8 @@
+<<<<<<< before updating
 """Tests for csp-adapter-telegram."""
+=======
+from csp_adapter_telegram import *
+>>>>>>> after updating
 
 import tempfile
 
