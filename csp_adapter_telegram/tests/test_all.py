@@ -21,10 +21,6 @@ from csp_adapter_telegram import (
     mention_user,
 )
 
-# ---------------------------------------------------------------------------
-# Imports
-# ---------------------------------------------------------------------------
-
 
 class TestImports:
     def test_all_exports(self):
@@ -48,11 +44,6 @@ class TestImports:
 
         assert hasattr(csp_adapter_telegram, "__version__")
         assert isinstance(csp_adapter_telegram.__version__, str)
-
-
-# ---------------------------------------------------------------------------
-# Legacy TelegramAdapterConfig
-# ---------------------------------------------------------------------------
 
 
 class TestTelegramAdapterConfig:
@@ -104,11 +95,6 @@ class TestTelegramAdapterConfig:
         legacy = TelegramAdapterConfig(bot_token=token)
         chatom_config = legacy.to_telegram_config()
         assert chatom_config.bot_token_str == token
-
-
-# ---------------------------------------------------------------------------
-# Telegram models (chatom re-exports)
-# ---------------------------------------------------------------------------
 
 
 class TestTelegramMessage:
@@ -199,11 +185,6 @@ class TestTelegramPresence:
         assert str(presence.status.value) == "online"
 
 
-# ---------------------------------------------------------------------------
-# Mentions (chatom re-exports)
-# ---------------------------------------------------------------------------
-
-
 class TestMentions:
     def test_mention_user(self):
         user = TelegramUser(id="123", name="TestUser", username="testuser")
@@ -218,11 +199,6 @@ class TestMentions:
     def test_mention_channel(self):
         channel = TelegramChannel(id="456", name="general")
         assert mention_channel(channel) == "#general"
-
-
-# ---------------------------------------------------------------------------
-# MockTelegramBackend
-# ---------------------------------------------------------------------------
 
 
 class TestMockBackend:
@@ -303,11 +279,6 @@ class TestMockBackend:
         sent_msg = await mock.send_message("-100456", "test")
         await mock.add_reaction(sent_msg, "👋")
         assert len(mock._reactions) == 1
-
-
-# ---------------------------------------------------------------------------
-# TelegramAdapter
-# ---------------------------------------------------------------------------
 
 
 class TestTelegramAdapter:
