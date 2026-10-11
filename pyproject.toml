@@ -151,3 +151,13 @@ section-order = [
     "F401",
     "F403",
 ]
+
+[tool.ty.src]
+# CSP's ``ts`` timeseries idiom (returning plain values from nodes annotated with
+# ``ts[...]``) and chatom's conditional ``BackendAdapter`` cannot be modeled
+# statically. Tests and examples exercise them at runtime, so skip them and keep
+# ``make check-types`` focused on production code.
+exclude = [
+    "csp_adapter_telegram/tests",
+    "csp_adapter_telegram/examples",
+]

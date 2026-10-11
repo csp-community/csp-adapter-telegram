@@ -17,7 +17,10 @@ __all__ = ("TelegramAdapter", "TelegramAdapterManager")
 log = logging.getLogger(__name__)
 
 
-class TelegramAdapter(BackendAdapter):
+# chatom declares BackendAdapter conditionally: a placeholder function when csp is
+# missing, the real class otherwise. csp is a hard dependency here, so it is always
+# the class at runtime, but ty sees the union of both branches.
+class TelegramAdapter(BackendAdapter):  # ty: ignore[invalid-base]
     """CSP adapter for Telegram using the chatom TelegramBackend.
 
     This adapter wraps the chatom TelegramBackend and provides CSP
@@ -57,7 +60,7 @@ class TelegramAdapter(BackendAdapter):
         chats: set[str] | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
-    ) -> ts[[TelegramMessage]]:
+    ) -> ts[list[TelegramMessage]]:
         """Subscribe to messages from Telegram.
 
         Args:
