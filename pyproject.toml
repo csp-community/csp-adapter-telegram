@@ -49,6 +49,7 @@ develop = [
     "codespell",
     "hatchling",
     "mdformat",
+    "mdformat-frontmatter",
     "mdformat-tables>=1",
     "pytest",
     "pytest-asyncio",
@@ -85,8 +86,12 @@ replace = 'version = "{new_version}"'
 [tool.coverage.run]
 branch = true
 omit = [
+<<<<<<< before updating
     "csp_adapter_telegram/tests/integration/",
     "csp_adapter_telegram/examples/*",
+=======
+    "csp_adapter_telegram/tests/integration/*",
+>>>>>>> after updating
 ]
 
 [tool.coverage.report]
